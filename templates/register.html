@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar - Barbearia Moderno</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Máscara de telefone
+        function aplicarMascaraTelefone(event) {
+            const input = event.target;
+            let value = input.value.replace(/\D/g, ""); // Remove tudo que não for dígito
+
+            if (value.length > 10) {
+                // Formato: (XX) XXXXX-XXXX
+                value = value.replace(/^(\d{2})(\d{5})(\d{4})$/, "($1) $2-$3");
+            } else if (value.length > 5) {
+                // Formato: (XX) XXXX-XXXX
+                value = value.replace(/^(\d{2})(\d{4})(\d{0,4})$/, "($1) $2-$3");
+            } else if (value.length > 2) {
+                // Formato: (XX) XXXX
+                value = value.replace(/^(\d{2})(\d{0,5})$/, "($1) $2");
+            } else {
+                // Formato: (XX
+                value = value.replace(/^(\d{0,2})$/, "($1");
+            }
+
+            input.value = value;
+        }
+    </script>
+</head>
+<body class="bg-gray-900 text-gray-100">
+
+    <!-- Navbar -->
+    <nav class="bg-gray-900 text-white">
+        <div class="container mx-auto flex justify-between items-center py-4">
+            <a href="/" class="text-2xl font-bold">Barbearia Moderno</a>
+        </div>
+    </nav>
+
+    <!-- Mensagens Flash -->
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+        <div class="mt-6" style="justify-content: center; display: flex;">
+            {% for category, message in messages %}
+                <div class="bg-{{ 'green' if category == 'success' else 'red' }}-100 text-{{ 'green' if category == 'success' else 'red' }}-800 px-4 py-2 rounded mb-4">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Formulário de Registro -->
+    <div class="container mx-auto mt-10 max-w-md">
+        <h2 class="text-3xl font-bold text-center">Registrar</h2>
+        <p class="text-center text-gray-400 mt-2">Crie sua conta para agendar horários.</p>
+
+        <form method="POST" action="{{ url_for('register') }}" class="mt-6 bg-gray-800 p-6 rounded-lg shadow-md">
+            <!-- Nome -->
+            <label class="block mb-4">
+                <span class="text-gray-300">Nome Completo</span>
+                <input type="text" name="name" required class="block w-full mt-1 p-2 border rounded bg-gray-700 text-white" placeholder="Digite seu nome completo">
+            </label>
+
+            <!-- E-mail -->
+            <label class="block mb-4">
+                <span class="text-gray-300">E-mail</span>
+                <input type="email" name="email" required class="block w-full mt-1 p-2 border rounded bg-gray-700 text-white" placeholder="Digite seu e-mail">
+            </label>
+
+            <!-- Telefone -->
+            <label class="block mb-4">
+                <span class="text-gray-300">Telefone</span>
+                <input type="text" name="phone" required class="block w-full mt-1 p-2 border rounded bg-gray-700 text-white" placeholder="Digite seu telefone" maxlength="15" oninput="aplicarMascaraTelefone(event)">
+            </label>
+
+            <!-- Senha -->
+            <label class="block mb-4">
+                <span class="text-gray-300">Senha</span>
+                <input type="password" name="password" required class="block w-full mt-1 p-2 border rounded bg-gray-700 text-white" placeholder="Digite sua senha">
+            </label>
+
+            <!-- Confirmar Senha -->
+            <label class="block mb-4">
+                <span class="text-gray-300">Confirmar Senha</span>
+                <input type="password" name="confirm_password" required class="block w-full mt-1 p-2 border rounded bg-gray-700 text-white" placeholder="Confirme sua senha">
+            </label>
+
+            <!-- Botão de Registro -->
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
+                Registrar
+            </button>
+            <!-- Link para Login -->
+        <div class="text-center mt-4">
+            <p class="text-gray-400">
+                Já tem uma conta?
+                <a href="{{ url_for('login') }}" class="text-blue-400 hover:underline">
+                    Faça login aqui
+                </a>
+            </p>
+        </div>
+        </form>
+
+        
+
+        
+    </div>
+</body>
+</html>

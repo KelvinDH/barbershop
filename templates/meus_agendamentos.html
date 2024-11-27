@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus Agendamentos - Barbearia Moderno</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+<!-- Navbar -->
+<nav class="bg-gray-900 text-white">
+    <div class="container mx-auto flex justify-between items-center py-4">
+        <a href="/" class="text-2xl font-bold">Barbearia Moderno</a>
+        <div>
+            {% if session['user_id'] %}
+                <div class="relative inline-block">
+                    <button onclick="toggleDropdown()" class="focus:outline-none">
+                        <button onclick="toggleDropdown()" class="focus:outline-none">
+                            <i class="bi bi-person-circle hover:text-blue-200" style="font-size: 36px;"></i>
+                            
+                        </button>
+                    </button>
+                    <div id="dropdown" class="hidden absolute right-0 bg-white text-black shadow-lg rounded-lg">
+                        <a href="{{ url_for('meus_agendamentos') }}" class="block px-4 py-2 hover:bg-gray-100">Meus Agendamentos</a>
+                        <a href="{{ url_for('logout') }}" class="block px-4 py-2 hover:bg-gray-100">Logout</a>
+                    </div>
+                </div>
+            {% else %}
+                <a href="/login" class="mr-4 py-2 px-4 bg-blue-600 rounded hover:bg-blue-700">Login</a>
+                <a href="/register" class="py-2 px-4 bg-green-600 rounded hover:bg-green-700">Registrar</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+    <div class="container mx-auto mt-10">
+        <h2 class="text-3xl font-bold text-center">Meus Agendamentos</h2>
+        <ul class="mt-6 bg-white p-6 rounded-lg shadow-md">
+            {% for appointment in appointments %}
+                <li class="mb-4 border-b pb-2">
+                    <p><strong>Data:</strong> {{ appointment.date.strftime('%d/%m/%Y') }}</p>
+                    <p><strong>Horário:</strong> {{ appointment.time.strftime('%H:%M') }}</p>
+                </li>
+            {% else %}
+                <p>Você ainda não fez nenhum agendamento.</p>
+            {% endfor %}
+        </ul>
+    </div>
+    <script>
+        function toggleDropdown() {
+            const dropdown = document.getElementById('dropdown');
+            dropdown.classList.toggle('hidden');
+        }
+    </script>
+</body>
+</html>

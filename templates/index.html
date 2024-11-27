@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salã do Bentinho</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<style>
+    html {
+        scroll-behavior: smooth;
+    }
+</style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+<!-- Navbar -->
+<nav class="bg-gray-900 text-white">
+    <div class="container mx-auto flex justify-between items-center py-4 px-4">
+        <!-- Logo -->
+        <a href="{{ url_for('home') }}" class="flex items-center">
+            <img src="static/images/logo.png" alt="Barbearia Moderno" class="h-10" style="width: 100px; height: 50px;">
+        </a>
+
+        <!-- Botão de Menu Mobile -->
+        <button id="menuButton" class="md:hidden block focus:outline-none">
+            <i class="bi bi-list hover:text-gray-100" style="font-size: 40px;"></i>
+        </button>
+
+        <!-- Links Desktop -->
+        <div id="desktopMenu" class="hidden md:flex space-x-6" style="align-items: center;">
+            {% if session['user_id'] %}
+                <div class="relative inline-block">
+                    <div class="relative inline-block flex space-x-6" style="align-items: center;">
+                        <a href="#home" class="hover:text-gray-300">Home</a>
+                        <a href="#about" class="hover:text-gray-300">Sobre Nós</a>
+                        <a href="#gallery" class="hover:text-gray-300">Galeria</a>
+                        <button onclick="toggleDropdown()" class="focus:outline-none">
+                            <i class="bi bi-person-circle hover:text-blue-200" style="font-size: 36px;"></i>
+                        </button>
+                        <div id="dropdown" class="hidden absolute right-0 bg-white text-black shadow-lg rounded-lg" style="margin-top: 120px;">
+                            <a href="{{ url_for('meus_agendamentos') }}" class="block px-4 py-2 hover:bg-gray-400 rounded-lg">Meus Agendamentos</a>
+                            <a href="{{ url_for('logout') }}" class="block px-4 py-2 hover:bg-gray-400 rounded-lg">Sair</a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <a href="#home" class="hover:text-gray-300">Home</a>
+                <a href="#about" class="hover:text-gray-300">Sobre Nós</a>
+                <a href="#gallery" class="hover:text-gray-300">Galeria</a>
+                <a href="/login" class="bg-blue-600 py-2 px-4 rounded hover:bg-blue-700">Login</a>
+                <a href="/register" class="bg-green-600 py-2 px-4 rounded hover:bg-green-700">Registrar</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Menu Mobile -->
+    <div id="mobileMenu" class="hidden flex flex-col space-y-2 bg-gray-800 px-4 py-2 md:hidden">
+        {% if session['user_id'] %}
+            <a href="#home" class="hover:text-gray-300">Home</a>
+            <a href="#about" class="hover:text-gray-300">Sobre Nós</a>
+            <a href="#gallery" class="hover:text-gray-300">Galeria</a>
+            <a href="{{ url_for('meus_agendamentos') }}" class="hover:text-gray-300">Meus Agendamentos</a>
+            <a href="{{ url_for('logout') }}" class="hover:text-gray-300">Sair</a>
+        {% else %}
+            <a href="#home" class="hover:text-gray-300">Home</a>
+            <a href="#about" class="hover:text-gray-300">Sobre Nós</a>
+            <a href="#gallery" class="hover:text-gray-300">Galeria</a>
+            <a href="/login" class="bg-blue-600 py-2 px-4 rounded hover:bg-blue-700" style="width: 80px;">Login</a>
+            <a href="/register" class="bg-green-600 py-2 px-4 rounded hover:bg-green-700" style="width: 100px;">Registrar</a>
+        {% endif %}
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section id="home" class="bg-gray-800 text-white flex items-center justify-center" style=" align-items: baseline; height: 400px; padding: 60px;">
+    <div class="text-center">
+        <h1 class="text-5xl font-bold">Bem-vindo ao Salão do Bentinho</h1>
+        <br><p class="mt-4 text-lg">Agende seu horário agora mesmo.</p></br>
+        <a href="/agendar" class="inline-block bg-green-600 text-white py-2 px-4 rounded-lg shadow-lg hover:bg-green-700">
+            <i class="bi bi-clock"></i> Agendar Horário 
+        </a>
+    </div>
+</section>
+
+<!-- Galeria -->
+<section id="gallery" class="py-16 bg-white">
+    <div class="container mx-auto">
+        <h2 class="text-3xl font-bold text-center">Galeria</h2>
+        <p class="mt-4 text-center text-lg text-gray-600">
+            Confira alguns dos cortes realizados por nossa equipe.
+        </p>
+        
+        <!-- Carousel -->
+        <div class="relative mt-8 max-w-4xl mx-auto">
+            <!-- Slides -->
+            <div class="carousel">
+                <div class="carousel-item">
+                    <img src="https://via.placeholder.com/800x400" alt="Corte 1" class="rounded-lg shadow-md">
+                </div>
+                <div class="carousel-item">
+                    <img src="https://via.placeholder.com/800x400" alt="Corte 2" class="rounded-lg shadow-md">
+                </div>
+                <div class="carousel-item">
+                    <img src="https://via.placeholder.com/800x400" alt="Corte 3" class="rounded-lg shadow-md">
+                </div>
+                <div class="carousel-item">
+                    <img src="https://via.placeholder.com/800x400" alt="Corte 4" class="rounded-lg shadow-md">
+                </div>
+            </div>
+
+            <!-- Botões de Controle -->
+            <button id="prev" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white p-2 rounded-full hover:bg-gray-800">
+                &#9664;
+            </button>
+            <button id="next" class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white p-2 rounded-full hover:bg-gray-800">
+                &#9654;
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Sobre Nós -->
+<section id="about" class="py-16 bg-gray-100">
+    <div class="container mx-auto text-center">
+        <h2 class="text-3xl font-bold">Sobre Nós</h2>
+        <p class="mt-4 text-lg text-gray-600">
+            Somos uma barbearia dedicada a oferecer os melhores cortes e um atendimento de qualidade. 
+            Nossa missão é transformar seu visual e proporcionar uma experiência única.
+        </p>
+    </div>
+</section>
+
+
+
+
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-white py-6">
+    <div class="container mx-auto text-center">
+        <p>© 2024 Barbearia Moderno. Todos os direitos reservados.</p>
+    </div>
+</footer>
+
+<script>
+    const carousel = document.querySelector('.carousel');
+    const slides = document.querySelectorAll('.carousel-item');
+    const prevButton = document.getElementById('prev');
+    const nextButton = document.getElementById('next');
+    let currentIndex = 0;
+
+    function showSlide(index) {
+        slides.forEach((slide, i) => {
+            slide.style.display = i === index ? 'block' : 'none';
+        });
+    }
+
+    function nextSlide() {
+        currentIndex = (currentIndex + 1) % slides.length;
+        showSlide(currentIndex);
+    }
+
+    function prevSlide() {
+        currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+        showSlide(currentIndex);
+    }
+
+    // Event listeners para botões
+    nextButton.addEventListener('click', nextSlide);
+    prevButton.addEventListener('click', prevSlide);
+
+    // Slide automático
+    setInterval(nextSlide, 3000); // Troca a cada 3 segundos
+
+    // Inicializa o carousel
+    showSlide(currentIndex);
+
+    
+        function toggleDropdown() {
+            const dropdown = document.getElementById('dropdown');
+            dropdown.classList.toggle('hidden');
+        }
+
+    // Script para abrir/fechar o menu mobile
+    const menuButton = document.getElementById("menuButton");
+    const mobileMenu = document.getElementById("mobileMenu");
+
+    menuButton.addEventListener("click", () => {
+        if (mobileMenu.classList.contains("hidden")) {
+            mobileMenu.classList.remove("hidden");
+        } else {
+            mobileMenu.classList.add("hidden");
+        }
+    });    
+    
+</script>
+
+</body>
+</html>

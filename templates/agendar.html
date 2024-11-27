@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendar - Salão do Bentinho</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Navbar -->
+    {% if session['user_id'] %}
+        <nav class="bg-gray-900 text-white">
+            <div class="container mx-auto flex justify-between items-center py-4">
+                <a href="{{ url_for('home') }}" class="flex items-center">
+                    <img src="static/images/logo.png" alt="Salao Bentinho" class="h-10" style="width: 500px; height: 200px;">
+                </a>
+                <button onclick="toggleDropdown()" class="focus:outline-none">
+                    <i class="bi bi-person-circle hover:text-blue-200" style="font-size: 36px;"></i>
+                </button>
+                <div id="dropdown" class="hidden absolute right-0 bg-white text-black shadow-lg rounded-lg" style="margin-top: 120px;">
+                    <a href="{{ url_for('meus_agendamentos') }}" class="block px-4 py-2 hover:bg-gray-400 rounded-lg">Meus Agendamentos</a>
+                    <a href="{{ url_for('logout') }}" class="block px-4 py-2 hover:bg-gray-400 rounded-lg">Sair</a>
+                </div>
+            </div>
+        </nav>
+        {% endif %}    
+
+    <!-- Agendamento -->
+    <div class="container mx-auto mt-10 max-w-md">
+        <h2 class="text-3xl font-bold text-center">Agendar Horário</h2>
+        <p class="text-center text-gray-600 mt-2">Escolha a data, horário e o serviço desejado.</p>
+
+        <!-- Formulário -->
+        <form method="POST" class="mt-6 bg-white p-6 rounded-lg shadow-md">
+            <!-- Campo de Data -->
+            <label class="block mb-4">
+                <span class="text-gray-700">Data</span>
+                <input type="date" name="date" required class="block w-full mt-1 p-2 border rounded">
+            </label>
+
+            <!-- Campo de Horário -->
+            <label class="block mb-4">
+                <span class="text-gray-700">Horário</span>
+                <select name="time" required class="block w-full mt-1 p-2 border rounded">
+                    {% for start, end in available_times %}
+                        <option value="{{ start.strftime('%H:%M') }}"
+                                {% if (request.form.date, start) in booked_times %} disabled {% endif %}>
+                            {{ start.strftime('%H:%M') }} - {{ end.strftime('%H:%M') }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </label>
+
+            <!-- Campo de Serviço -->
+            <label class="block mb-4">
+                <span class="text-gray-700">Serviço</span>
+                <select name="service_type" required class="block w-full mt-1 p-2 border rounded">
+                    <option value="Corte Simples">Corte Simples - R$30,00</option>
+                    <option value="Corte Completo">Corte Completo - R$50,00</option>
+                    <option value="Barba">Barba - R$20,00</option>
+                    <option value="Corte e Barba">Corte e Barba - R$70,00</option>
+                </select>
+            </label>
+
+            <!-- Botão de Submissão -->
+            <button type="submit" class="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
+                Confirmar Agendamento
+            </button>
+        </form>
+
+        <!-- Mensagens Flash -->
+        {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            <div class="mt-6">
+                {% for category, message in messages %}
+                    <div class="bg-{{ 'green' if category == 'success' else 'red' }}-100 text-{{ 'green' if category == 'success' else 'red' }}-800 px-4 py-2 rounded mb-4">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% endwith %}
+    </div>
+
+    <script>
+         function toggleDropdown() {
+            const dropdown = document.getElementById('dropdown');
+            dropdown.classList.toggle('hidden');
+        }
+
+    </script>
+
+</body>
+</html>
